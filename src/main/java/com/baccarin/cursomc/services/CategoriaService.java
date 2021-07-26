@@ -15,14 +15,18 @@ import com.baccarin.cursomc.services.exceptions.ObjectNotFoundException;
 public class CategoriaService {
 
 	@Autowired
-	private CategoriaRepository catRepo;
+	private CategoriaRepository categoriaRepo;
 	
 	public Categoria buscar(Integer id) {
 		
-		Optional<Categoria> cat = catRepo.findById(id);
+		Optional<Categoria> cat = categoriaRepo.findById(id);
 		return cat.orElseThrow(() -> new ObjectNotFoundException(
 				("Objeto não encontrado! Id: " + id + ", Tipo: " + Categoria.class.getName())));
 		
+	}
+	
+	public Categoria insert(Categoria categoria) {
+		return categoriaRepo.save(categoria);
 	}
 	
 }
