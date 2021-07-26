@@ -14,6 +14,7 @@ import com.baccarin.cursomc.domain.Cidade;
 import com.baccarin.cursomc.domain.Cliente;
 import com.baccarin.cursomc.domain.Endereco;
 import com.baccarin.cursomc.domain.Estado;
+import com.baccarin.cursomc.domain.ItemPedido;
 import com.baccarin.cursomc.domain.Pagamento;
 import com.baccarin.cursomc.domain.PagamentoComBoleto;
 import com.baccarin.cursomc.domain.PagamentoComCartao;
@@ -26,6 +27,7 @@ import com.baccarin.cursomc.repositories.CidadeRepository;
 import com.baccarin.cursomc.repositories.ClienteRepository;
 import com.baccarin.cursomc.repositories.EnderecoRepository;
 import com.baccarin.cursomc.repositories.EstadoRepository;
+import com.baccarin.cursomc.repositories.ItemPedidoRepository;
 import com.baccarin.cursomc.repositories.PagamentoRepository;
 import com.baccarin.cursomc.repositories.PedidoRepository;
 import com.baccarin.cursomc.repositories.ProdutoRepository;
@@ -49,6 +51,8 @@ public class CursomcApplication implements CommandLineRunner {
 	private PedidoRepository pedidoRepo;
 	@Autowired
 	private PagamentoRepository pagamentoRepo;
+	@Autowired
+	private ItemPedidoRepository itemRepo;
 	
 	
 
@@ -60,22 +64,22 @@ public class CursomcApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		Categoria cat1 = new Categoria("Informática");
-		Categoria cat2 = new Categoria("RH");
+		Categoria categoria1 = new Categoria("Informática");
+		Categoria categoria2 = new Categoria("RH");
 
-		Produto p1 = new Produto("Computador", 1000.0);
-		Produto p2 = new Produto("Televisão", 2300.0);
-		Produto p3 = new Produto("Cadeira", 130.0);
+		Produto produto1 = new Produto("Computador", 1000.0);
+		Produto produto2 = new Produto("Televisão", 2300.0);
+		Produto produto3 = new Produto("Cadeira", 130.0);
 
-		cat1.getProdutos().addAll(Arrays.asList(p1, p2));
-		cat2.getProdutos().addAll(Arrays.asList(p3));
+		categoria1.getProdutos().addAll(Arrays.asList(produto1, produto2));
+		categoria2.getProdutos().addAll(Arrays.asList(produto3));
 
-		p1.getCategorias().addAll(Arrays.asList(cat1));
-		p2.getCategorias().addAll(Arrays.asList(cat1));
-		p3.getCategorias().addAll(Arrays.asList(cat2));
+		produto1.getCategorias().addAll(Arrays.asList(categoria1));
+		produto2.getCategorias().addAll(Arrays.asList(categoria1));
+		produto3.getCategorias().addAll(Arrays.asList(categoria2));
 
-		catRepo.saveAll(Arrays.asList(cat1, cat2));
-		produtoRepo.saveAll(Arrays.asList(p1, p2, p3));
+		catRepo.saveAll(Arrays.asList(categoria1, categoria2));
+		produtoRepo.saveAll(Arrays.asList(produto1, produto2, produto3));
 
 		Estado estado1 = new Estado("Rio Grande do Sul");
 		Estado estado2 = new Estado("São Paulo");
@@ -119,6 +123,20 @@ public class CursomcApplication implements CommandLineRunner {
 		
 		pedidoRepo.saveAll(Arrays.asList(pedido1,pedido2));
 		pagamentoRepo.saveAll(Arrays.asList(pagamento1,pagamento2));
+		
+		ItemPedido item1 = new ItemPedido(pedido1, produto1 ,0.00 ,1 ,20000.0);
+		ItemPedido item2 = new ItemPedido(pedido1, produto2 ,3.00 ,5 ,500.0);
+		ItemPedido item3 = new ItemPedido(pedido2, produto2 ,2.00 ,2 ,300.0);
+		
+		pedido1.getItens().addAll(Arrays.asList(item1,item2));
+		pedido2.getItens().addAll(Arrays.asList(item3));
+		
+		produto1.getItens().addAll(Arrays.asList(item1));
+		produto2.getItens().addAll(Arrays.asList(item2,item3));
+		
+		itemRepo.saveAll(Arrays.asList(item1,item2,item3));
+
+
 		
 	}
 }
