@@ -12,7 +12,7 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
 import com.baccarin.cursomc.domain.enums.EstadoPagamento;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -29,7 +29,7 @@ public abstract class Pagamento implements Serializable {
 	@JoinColumn(name = "pedido_id")
 	@OneToOne
 	@MapsId
-	@JsonBackReference
+	@JsonIgnore
 	private Pedido pedido;
 
 	public Pagamento() {
