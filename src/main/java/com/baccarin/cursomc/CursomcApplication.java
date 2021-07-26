@@ -1,6 +1,8 @@
 package com.baccarin.cursomc;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,13 +14,20 @@ import com.baccarin.cursomc.domain.Cidade;
 import com.baccarin.cursomc.domain.Cliente;
 import com.baccarin.cursomc.domain.Endereco;
 import com.baccarin.cursomc.domain.Estado;
+import com.baccarin.cursomc.domain.Pagamento;
+import com.baccarin.cursomc.domain.PagamentoComBoleto;
+import com.baccarin.cursomc.domain.PagamentoComCartao;
+import com.baccarin.cursomc.domain.Pedido;
 import com.baccarin.cursomc.domain.Produto;
+import com.baccarin.cursomc.domain.enums.EstadoPagamento;
 import com.baccarin.cursomc.domain.enums.TipoCliente;
 import com.baccarin.cursomc.repositories.CategoriaRepository;
 import com.baccarin.cursomc.repositories.CidadeRepository;
 import com.baccarin.cursomc.repositories.ClienteRepository;
 import com.baccarin.cursomc.repositories.EnderecoRepository;
 import com.baccarin.cursomc.repositories.EstadoRepository;
+import com.baccarin.cursomc.repositories.PagamentoRepository;
+import com.baccarin.cursomc.repositories.PedidoRepository;
 import com.baccarin.cursomc.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -36,6 +45,12 @@ public class CursomcApplication implements CommandLineRunner {
 	private ClienteRepository clienteRepo;
 	@Autowired
 	private EnderecoRepository enderecoRepo;
+	@Autowired
+	private PedidoRepository pedidoRepo;
+	@Autowired
+	private PagamentoRepository pagamentoRepo;
+	
+	
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -44,12 +59,7 @@ public class CursomcApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		this.startProdutoAndCategoria();
-		this.startEstadoAndCidade();
-		this.startCliente();
-	}
 
-	public void startProdutoAndCategoria() {
 		Categoria cat1 = new Categoria("Informática");
 		Categoria cat2 = new Categoria("RH");
 
@@ -66,47 +76,49 @@ public class CursomcApplication implements CommandLineRunner {
 
 		catRepo.saveAll(Arrays.asList(cat1, cat2));
 		produtoRepo.saveAll(Arrays.asList(p1, p2, p3));
-	}
 
-	public void startEstadoAndCidade() {
-		Estado e1 = new Estado("Rio Grande do Sul");
-		Estado e2 = new Estado("São Paulo");
+		Estado estado1 = new Estado("Rio Grande do Sul");
+		Estado estado2 = new Estado("São Paulo");
 
-		Cidade c1 = new Cidade("Pelotas", e1);
-		Cidade c2 = new Cidade("Rio Grande", e1);
-		Cidade c3 = new Cidade("Mogi", e2);
+		Cidade cidade1 = new Cidade("Pelotas", estado1);
+		Cidade cidade2 = new Cidade("Rio Grande", estado1);
+		Cidade cidade3 = new Cidade("Mogi", estado2);
 
-		e1.getCidades().addAll(Arrays.asList(c1, c2));
-		e2.getCidades().addAll(Arrays.asList(c3));
+		estado1.getCidades().addAll(Arrays.asList(cidade1, cidade2));
+		estado2.getCidades().addAll(Arrays.asList(cidade3));
 
-		estadoRepo.saveAll(Arrays.asList(e1, e2));
-		cidadeRepo.saveAll(Arrays.asList(c1, c2, c3));
+		estadoRepo.saveAll(Arrays.asList(estado1, estado2));
+		cidadeRepo.saveAll(Arrays.asList(cidade1, cidade2, cidade3));
 
-	}
-
-	public void startCliente() {
-		Estado e1 = new Estado("Rio Grande do Norte");
-		Cidade c1 = new Cidade("Não sei", e1);
-		e1.getCidades().addAll(Arrays.asList(c1));
-		estadoRepo.saveAll(Arrays.asList(e1));
-		cidadeRepo.saveAll(Arrays.asList(c1));
-
-		
-		Cliente cliente = new Cliente("Guilherme", "teste@email.com", "000.000.000-00", TipoCliente.PESSOA_FISICA);
-		cliente.getTelefones().addAll(Arrays.asList("99999999", "888884484"));
+		Cliente cliente1 = new Cliente("Guilherme", "teste@email.com", "000.000.000-00", TipoCliente.PESSOA_FISICA);
+		cliente1.getTelefones().addAll(Arrays.asList("99999999", "888884484"));
 
 		Cliente cliente2 = new Cliente("Guilherme", "teste2@email.com", "000.000.000-11", TipoCliente.PESSOA_FISICA);
-		cliente2.getTelefones().addAll(Arrays.asList("9015213454","9546545612"));
+		cliente2.getTelefones().addAll(Arrays.asList("9015213454", "9546545612"));
 
-		Endereco end1 = new Endereco("Centro", "565", "A", "CentroDnvo", "96000-500", cliente, c1);
-		Endereco end2 = new Endereco("Praia", "5330", "B", "CentroDnvo", "96000-000", cliente2, c1);
+		Endereco endereco1 = new Endereco("Centro", "565", "A", "CentroDnvo", "96000-500", cliente1, cidade1);
+		Endereco endereco2 = new Endereco("Praia", "5330", "B", "CentroDnvo", "96000-000", cliente2, cidade1);
+
+		cliente1.getEnderecos().addAll(Arrays.asList(endereco1, endereco2));
+		cliente2.getEnderecos().addAll(Arrays.asList(endereco2));
+
+		clienteRepo.saveAll(Arrays.asList(cliente1, cliente2));
+		enderecoRepo.saveAll(Arrays.asList(endereco1, endereco2));
 		
-		cliente.getEnderecos().addAll(Arrays.asList(end1,end2));
-		cliente2.getEnderecos().addAll(Arrays.asList(end2));
-
-		clienteRepo.saveAll(Arrays.asList(cliente,cliente2));
-		enderecoRepo.saveAll(Arrays.asList(end1,end2));
-
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		Pedido pedido1 = new Pedido(sdf.parse("30/09/2017 10:50"), cliente1, endereco1);
+		Pedido pedido2 = new Pedido(sdf.parse("10/09/2020 10:50"), cliente2, endereco2);
+		
+		Pagamento pagamento1 = new PagamentoComCartao(EstadoPagamento.QUITADO, pedido1, 2);
+		pedido1.setPagamento(pagamento1);
+		Pagamento pagamento2 = new PagamentoComBoleto(EstadoPagamento.PENDENTE, pedido2, sdf.parse("01/01/2022 00:00"),new Date());
+		pedido2.setPagamento(pagamento2);
+		
+		cliente1.getPedidos().addAll(Arrays.asList(pedido1));
+		cliente2.getPedidos().addAll(Arrays.asList(pedido2));
+		
+		pedidoRepo.saveAll(Arrays.asList(pedido1,pedido2));
+		pagamentoRepo.saveAll(Arrays.asList(pagamento1,pagamento2));
+		
 	}
-
 }
