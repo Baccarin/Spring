@@ -16,10 +16,20 @@ public class PedidoService {
 	@Autowired
 	private PedidoRepository pedidoRepo;
 	
-	public Pedido buscar(Integer id) {	
-		Optional<Pedido> cliente = pedidoRepo.findById(id);
-		return cliente.orElseThrow(() -> new ObjectNotFoundException(
+	public Pedido find(Integer id) {	
+		Optional<Pedido> pedido = pedidoRepo.findById(id);
+		return pedido.orElseThrow(() -> new ObjectNotFoundException(
 				("Objeto não encontrado! Id: " + id + ", Tipo: " + Pedido.class.getName())));
 		
+	}
+	
+	public Pedido insert(Pedido pedido) {
+		pedido.setId(null);
+		return pedidoRepo.save(pedido);
+	}
+
+	public Pedido update(Pedido pedido) {
+		find(pedido.getId());
+		return pedidoRepo.save(pedido);
 	}
 }
