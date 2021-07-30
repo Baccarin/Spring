@@ -1,6 +1,10 @@
 package com.baccarin.cursomc.resources;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.baccarin.cursomc.domain.Categoria;
+import com.baccarin.cursomc.dto.CategoriaDTO;
 import com.baccarin.cursomc.services.CategoriaService;
 
 @RestController
@@ -47,6 +52,21 @@ public class CategoriaResource {
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
 		categoriaService.delete(id);
 		return ResponseEntity.noContent().build();
+	}
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity<List<CategoriaDTO>> findAll() {
+		List<Categoria> listaCategorias = categoriaService.findAll();
+		List<CategoriaDTO> listaCategoriaDTO = new ArrayList<>();
+		listaCategorias.forEach(categoria -> {
+			listaCategoriaDTO.add(new CategoriaDTO(categoria));
+		});
+		
+		//Sugestão do video
+		//List<CategoriaDTO> lista = listaCategorias.stream().map(categoria1 -> new CategoriaDTO(categoria1)).collect(Collectors.toList());
+		
+		return ResponseEntity.ok(listaCategoriaDTO);
+
 	}
 
 }
