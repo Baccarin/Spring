@@ -35,21 +35,5 @@ public class ClienteResource {
 		return ResponseEntity.created(uri).build();
 	}
 
-	// ISSO TA BEM ERRADO
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<Void> update(@RequestBody Cliente cliente, @PathVariable Integer id, @PathVariable String nome,@PathVariable String email) {
-		this.updateCliente(cliente, id, nome, email);
-		cliente = clienteService.update(cliente);
-		return ResponseEntity.noContent().build();
-	}
-	
-	public Cliente updateCliente(Cliente cliente, Integer id,  String nome, String email) {
-		if (cliente != null) {
-			cliente.setId(id);
-			cliente.setNome(nome);
-			cliente.setEmail(email);
-		}
-		return cliente;
-	}
 
 }
