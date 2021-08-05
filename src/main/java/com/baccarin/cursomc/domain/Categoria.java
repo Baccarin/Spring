@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
+import com.baccarin.cursomc.dto.CategoriaDTO;
+
 @Entity
 public class Categoria implements Serializable {
 
@@ -23,7 +25,7 @@ public class Categoria implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
-	
+
 	@ManyToMany(mappedBy = "categorias")
 	private List<Produto> produtos = new ArrayList<>();
 
@@ -42,6 +44,11 @@ public class Categoria implements Serializable {
 		this.nome = nome;
 	}
 
+	public Categoria(CategoriaDTO dto) {
+		this.id = dto.getId();
+		this.nome = dto.getNome();
+	}
+	
 	public String getNome() {
 		return this.nome;
 	}
@@ -53,7 +60,7 @@ public class Categoria implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
+
 	public Integer getId() {
 		return this.id;
 	}
