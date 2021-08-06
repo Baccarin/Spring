@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.baccarin.cursomc.domain.enums.TipoCliente;
+import com.baccarin.cursomc.dto.ClienteDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -50,13 +51,24 @@ public class Cliente implements Serializable {
 	public Cliente(String nome, TipoCliente tipo) {
 		this();
 		this.nome = nome;
-		this.tipo = tipo.getId();
+		this.tipo = (tipo != null) ? tipo.getId() : null;
 	}
 
 	public Cliente(String nome, String email, String cpfOuCnpj, TipoCliente tipo) {
 		this(nome, tipo);
 		this.email = email;
 		this.cpfOuCnpj = cpfOuCnpj;
+	}
+	
+	public Cliente (Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipo) {
+		this(nome, email, cpfOuCnpj, tipo);
+		this.id = id;
+	}
+	
+	public Cliente (ClienteDTO clienteDTO) {
+		this.id = clienteDTO.getId();
+		this.nome = clienteDTO.getNome();
+		this.email = clienteDTO.getEmail();
 	}
 
 	public Integer getId() {
@@ -96,7 +108,7 @@ public class Cliente implements Serializable {
 	}
 
 	public void setTipo(TipoCliente tipo) {
-		this.tipo = tipo.getId();
+		this.tipo = tipo != null ? tipo.getId() : null;
 	}
 
 	public Set<String> getTelefones() {
@@ -140,4 +152,11 @@ public class Cliente implements Serializable {
 		return Objects.equals(id, other.id);
 	}
 
+	@Override
+	public String toString() {
+		return "Cliente [id=" + id + ", nome=" + nome + ", email=" + email + ", cpfOuCnpj=" + cpfOuCnpj + ", tipo="
+				+ tipo + "]";
+	}
+
+	
 }

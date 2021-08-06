@@ -29,7 +29,8 @@ public enum TipoCliente {
 				}
 			}
 		}
-		throw new IllegalArgumentException("Id do TipoCliente inválido %s" + id);
+		return null;
+		//throw new IllegalArgumentException("Id do TipoCliente inválido %s" + id);
 
 	}
 }
