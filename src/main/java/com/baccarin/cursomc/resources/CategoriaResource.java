@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.baccarin.cursomc.domain.Categoria;
+import com.baccarin.cursomc.domain.Cliente;
 import com.baccarin.cursomc.dto.CategoriaDTO;
 import com.baccarin.cursomc.services.CategoriaService;
 
@@ -46,7 +47,7 @@ public class CategoriaResource {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Void> update(@Valid @RequestBody CategoriaDTO categoriaDTO, @PathVariable Integer id) {
-		Categoria categoria = new Categoria(categoriaDTO);
+		Categoria categoria = categoriaService.fromDTO(categoriaDTO);
 		categoria.setId(id);
 		categoria = categoriaService.update(categoria);
 		return ResponseEntity.noContent().build();

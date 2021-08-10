@@ -36,7 +36,7 @@ public class ClienteService {
 
 	public Cliente update(Cliente cliente) {
 		Cliente clienteNew = find(cliente.getId());
-		this.updateData(clienteNew, cliente);
+		this.fillCliente(clienteNew, cliente);
 		return clienteRepo.save(clienteNew);
 	}
 	
@@ -46,7 +46,7 @@ public class ClienteService {
 		try {
 			clienteRepo.deleteById(id);
 		} catch (DataIntegrityViolationException ex) {
-			throw new DataIntegrityExcpetion("Não é possível excluir uma categoria que possua produtos relacionados");
+			throw new DataIntegrityExcpetion("Não é possível excluir um Cliente que possua enderecos relacionados");
 		}
 	}
 	
@@ -63,11 +63,9 @@ public class ClienteService {
 		return new Cliente(clienteDTO.getId(), clienteDTO.getNome(), clienteDTO.getEmail(), null, null);
 	}	
 
-	private void updateData(Cliente newCliente, Cliente cliente) {
+	private void fillCliente(Cliente newCliente, Cliente cliente) {
 		newCliente.setNome(cliente.getNome());
 		newCliente.setEmail(cliente.getEmail());
-		newCliente.setCpfOuCnpj(cliente.getCpfOuCnpj());
-		newCliente.setTipo(cliente.getTipo() != null ? cliente.getTipo() : null);
 	}
 
 }

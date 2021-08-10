@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.baccarin.cursomc.domain.Categoria;
+import com.baccarin.cursomc.dto.CategoriaDTO;
 import com.baccarin.cursomc.repositories.CategoriaRepository;
 import com.baccarin.cursomc.services.exceptions.DataIntegrityExcpetion;
 import com.baccarin.cursomc.services.exceptions.ObjectNotFoundException;
@@ -34,9 +35,12 @@ public class CategoriaService {
 	}
 
 	public Categoria update(Categoria categoria) {
-		find(categoria.getId());
-		return categoriaRepo.save(categoria);
+		Categoria categoriaNew = find(categoria.getId());
+		this.fillCategoria(categoriaNew, categoria);
+		return categoriaRepo.save(categoriaNew);
 	}
+	
+
 
 	public void delete(Integer id) {
 		find(id);
@@ -55,5 +59,13 @@ public class CategoriaService {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage ,Direction.valueOf(direction), orderBy);
 		return categoriaRepo.findAll(pageRequest);
 	}
+	
+	private void fillCategoria(Categoria categoriaNew, Categoria categoria) {
+		categoriaNew.setNome(categoria.getNome());
+	}
 
+	public Categoria fromDTO(CategoriaDTO categoriaDTO) {
+		return new Categoria(categoriaDTO.getId(), categoriaDTO.getNome());
+	}	
+		
 }
